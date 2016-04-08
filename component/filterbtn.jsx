@@ -2,8 +2,11 @@ import React from 'react'
 
 const styles = {
     filterBtn:{
+        cursor:'pointer',
+        padding:'5px',
         marginTop:'5px',
-        marginLeft:'5px',
+        marginLeft:'15px',
+        boxShadow:'0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
         display:'inline-block',
         fontWeight:'block',
     },
