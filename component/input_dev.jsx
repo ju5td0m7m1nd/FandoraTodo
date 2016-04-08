@@ -18,7 +18,7 @@ const TodoInput = React.createClass({
         return {
             value:"",
             todolist : this.props.todolist,
-            taskcount:0,
+            taskcount:this.props.taskcount,
             filter:true,
             readdata:false,
         };
@@ -39,6 +39,7 @@ const TodoInput = React.createClass({
         newTodoList[this.state.taskcount] = taskPair
         /* use for local storage */
         localForage.setItem( this.state.taskcount,taskPair);
+        localForage.setItem( 'taskcount',this.state.taskcount+1);
 
         this.setState({
             todolist: newTodoList,

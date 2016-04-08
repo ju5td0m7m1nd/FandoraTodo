@@ -72,13 +72,19 @@
 	var localForage = __webpack_require__(163);
 
 	var todolist = {};
+	var count = 0;
 	localForage.iterate(function (value, key, iterationNumber) {
-	    todolist[key] = value;
+	    if (key != 'taskcount') {
+	        todolist[key] = value;
+	    } else {
+	        count = value;
+	        console.log(count);
+	    }
 	}, function (err) {
 	    if (!err) {
 	        console.log('Iteration has completed');
 
-	        (0, _reactDom.render)(_react2.default.createElement(_input_dev2.default, { todolist: todolist }), document.getElementById('inputhook'));
+	        (0, _reactDom.render)(_react2.default.createElement(_input_dev2.default, { taskcount: count, todolist: todolist }), document.getElementById('inputhook'));
 	    }
 	});
 
@@ -19724,7 +19730,7 @@
 	        return {
 	            value: "",
 	            todolist: this.props.todolist,
-	            taskcount: 0,
+	            taskcount: this.props.taskcount,
 	            filter: true,
 	            readdata: false
 	        };
@@ -19743,6 +19749,7 @@
 	        newTodoList[this.state.taskcount] = taskPair;
 	        /* use for local storage */
 	        localForage.setItem(this.state.taskcount, taskPair);
+	        localForage.setItem('taskcount', this.state.taskcount + 1);
 
 	        this.setState({
 	            todolist: newTodoList,
