@@ -24,7 +24,7 @@ const TodoBlock = React.createClass({
 
     getInitialState(){
         return {
-            checked : false,
+            checked : this.props.todotask['checked'],
         };
     },
     
@@ -40,8 +40,8 @@ const TodoBlock = React.createClass({
         let blockStyle = this.state.checked ? Object.assign({},styles.todoblock,styles.checked) : Object.assign({},styles.todoblock,{});
         return <div>
                <div className="todoblock" style={blockStyle}>
-                    <input type='checkbox' onChange={this.handleCheck}/>
-                    {this.props.todotask}
+                    <input type='checkbox' defaultChecked={this.props.todotask['checked'] ? 'checked':''} onChange={this.handleCheck}/>
+                    {this.props.todotask['task']}
                                     </div>
                <label style={styles.cancel}>
                         <input type='checkbox' onChange={this.handleDelete}/>

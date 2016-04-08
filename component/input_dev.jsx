@@ -1,18 +1,27 @@
 import React from 'react';
 import TodoBlock from './todoblock.jsx';
 import FilterButton from './filterbtn.jsx';
+const localForage:LocalForage = require("localforage");
+
+const styles = {
+    input:{
+        border :'1px solid #000',
+        boxShadow :'0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
+        padding:'5px',
+        display:'block',
+    },
+};
+
 const TodoInput = React.createClass({
     
     getInitialState(){
         return {
             value:"",
-            todolist : {},
+            todolist : this.props.todolist,
             taskcount:0,
             filter:true,
+            readdata:false,
         };
-    },
-    componentDidMount(){
-    
     },
 
     handleKeyDown(ev){
@@ -26,11 +35,11 @@ const TodoInput = React.createClass({
             return ;
         }
         let newTodoList = this.state.todolist;
-        newTodoList[this.state.taskcount] = 
-                {   
-                    task :this.state.value,
-                    checked : false,
-                }    
+        let taskPair = { task:this.state.value, checked:false};
+        newTodoList[this.state.taskcount] = taskPair
+        /* use for local storage */
+        localForage.setItem( this.state.taskcount,taskPair);
+
         this.setState({
             todolist: newTodoList,
             taskcount : this.state.taskcount+1,
@@ -53,6 +62,9 @@ const TodoInput = React.createClass({
                 newTodoList[i] = this.state.todolist[i];
             }
         }
+        // Remove From local
+        localForage.removeItem(task);
+
         this.setState({
             todolist: newTodoList,
         });
@@ -60,6 +72,11 @@ const TodoInput = React.createClass({
     updateChecked(task){
         let newTodoList = this.state.todolist;
         newTodoList[task]['checked'] = !newTodoList[task]['checked'];
+        
+        // Update in local
+        let taskPair = newTodoList[task];
+        localForage.setItem(task, taskPair);
+
         this.setState({ todolist: newTodoList });
     },
     handleFilterOn(){
@@ -70,18 +87,19 @@ const TodoInput = React.createClass({
     },
 
     render(){
+        console.log(this.state.todolist);
         let block = [];
         for (var i in this.state.todolist) {
             if (this.state.filter || this.state.todolist[i]['checked']){
                 block.push(<TodoBlock taskid={i} 
                                       deleteEvent={this.handleDelete} 
-                                      todotask={this.state.todolist[i]['task']} 
+                                      todotask={this.state.todolist[i]} 
                                       key={i}
                                       setChecked={this.updateChecked}/>);
             }
         }
         return  <div>
-                    <input type='text' style={{display:'block'}} onKeyDown={this.handleKeyDown} value={this.state.value} onChange={this.handleChange}/>
+                    <input type='text' style={styles.input} onKeyDown={this.handleKeyDown} value={this.state.value} onChange={this.handleChange}/>
                     <FilterButton text="已完成" handleFilterOn = {this.handleFilterOn}/> 
                     <FilterButton text="全部" handleFilterOn = {this.handleFilterOff}/>
                 {block}
